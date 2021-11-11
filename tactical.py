@@ -8,6 +8,4 @@ shields = 100.0
 power = 100.0
 systems = 100.0
 
-in_combat = True
-
-eliminate_target_ship("Hornblower", 100.0, 100.0, 100.0, 100.0, 100.0)
+duel_target_ship("Hornblower", 100.0, 100.0, 100.0, 100.0, 100.0)
