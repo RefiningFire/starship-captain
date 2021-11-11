@@ -14,3 +14,9 @@ def duel_target_ship(player_hull, player_armor, player_shields, player_power, pl
     if locked_in_combat == True:
         if target_hull > 0 and player_hull > 0:
             print("Both Hull and Target Hull > 0")
+        elif target_hull <= 0 and player_hull >0:
+            print("You Win!")
+            locked_in_combat = False
+        elif target_hull > 0 and player_hull <= 0:
+            print("You Lose...")
+            locked_in_combat = False
