@@ -11,6 +11,6 @@ def duel_target_ship(player_hull, player_armor, player_shields, player_power, pl
     print("Target Power: " + str(target_power))
     print("Target Systems: " + str(target_systems))
     locked_in_combat = True
-    while locked_in_combat == True:
+    if locked_in_combat == True:
         if target_hull > 0 and player_hull > 0:
             print("Both Hull and Target Hull > 0")
