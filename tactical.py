@@ -1,4 +1,4 @@
-import tactical_events
+from tactical_events import *
 
 hull = 100.0
 armor = 100.0
