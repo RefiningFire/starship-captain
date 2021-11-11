@@ -10,4 +10,5 @@ systems = 100.0
 
 in_combat = True
 
-while in_combat == True:
+eliminate_target_ship("Hornblower")
+# while in_combat == True:
