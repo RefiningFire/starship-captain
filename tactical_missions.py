@@ -1,2 +1,2 @@
-def eliminate_target_ship(target_name):
-    print(target_name)
+def eliminate_target_ship(target_id):
+    print(target_id[0])
