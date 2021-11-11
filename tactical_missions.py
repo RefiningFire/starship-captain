@@ -1,4 +1,9 @@
-def duel_target_ship(target_name, target_hull, target_armor, target_shields, target_power, target_systems):
+def duel_target_ship(player_hull, player_armor, player_shields, player_power, player_systems, target_name, target_hull, target_armor, target_shields, target_power, target_systems):
+    print("Player Hull: " + player_hull)
+    print("Player Armor: " + player_armor)
+    print("Player Shields: " + player_shields)
+    print("Player Power: " + player_power)  
+    print("Player Systems: " + player_systems)
     print("Target Name: " + target_name)
     print("Target Hull: " + str(target_hull))
     print("Target Armor: " + str(target_armor))
