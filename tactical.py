@@ -8,4 +8,4 @@ shields = 70.0
 power = 60.0
 systems = 50.0
 
-duel_target_ship(hull, armor, shields, power, systems, "Hornblower", 0.0, 35.0, 30.0, 25.0, 20.0)
+duel_target_ship(hull, 100.0)
