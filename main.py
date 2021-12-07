@@ -1,6 +1,8 @@
 import pygame
 import pygame_gui
 
+count = 0
+
 pygame.init()
 
 pygame.display.set_caption('Quick Start')
@@ -31,11 +33,15 @@ total_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(
     text='Print Count',
     manager=manager)
 
+text_window = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(
+    (250, 100), (300, 50)),
+    text=f'This is will display the input.' ,
+    manager=manager)
+
 
 clock = pygame.time.Clock()
 is_running = True
 
-count = 0
 
 while is_running:
     time_delta = clock.tick(60)/1000.0
@@ -46,13 +52,14 @@ while is_running:
         if event.type == pygame.USEREVENT:
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == hello_button:
-                    print('Hello World!')
+                    text_window.set_text('Hello World!')
                 elif event.ui_element == bye_button:
-                    print('Bye Bye World...')
+                    text_window.set_text('Bye Bye.')
                 elif event.ui_element == add_button:
                     count += 1
+                    text_window.set_text('Adding...')
                 elif event.ui_element == total_button:
-                    print(count)
+                    text_window.set_text(f'This is the current count: {count}')
 
         manager.process_events(event)
 
