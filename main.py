@@ -1,47 +1,52 @@
 import pygame
 import pygame_gui
 
+
 count = 0
+
+screen_size_x = 1280
+screen_size_y = 720
+
+button_size_x = 50
+button_size_y = 50
 
 pygame.init()
 
 pygame.display.set_caption('Quick Start')
-window_surface = pygame.display.set_mode((800, 600))
+window_surface = pygame.display.set_mode((screen_size_x, screen_size_y))
 
-background = pygame.Surface((800, 600))
+background = pygame.Surface((screen_size_x, screen_size_y))
 background.fill(pygame.Color('#000000'))
 
-manager = pygame_gui.UIManager((800, 600), 'theme.json')
+manager = pygame_gui.UIManager((screen_size_x, screen_size_y), 'theme.json')
 
 hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(
-    (250, 275), (100, 50)),
-    text='Say Hello',
+    ((screen_size_x // 2) - 100, 0), (button_size_x, button_size_y)),
+    text='Hi!',
     manager=manager)
 
-bye_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(
-    (450, 275), (100, 50)),
-    text='Say Bye-Bye',
+subtract_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(
+    ((screen_size_x // 2) - 50, 0), (button_size_x, button_size_y)),
+    text='-1',
     manager=manager)
 
 add_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(
-    (250, 375), (100, 50)),
-    text='Add One',
+    ((screen_size_x // 2) + 0, 0), (button_size_x, button_size_y)),
+    text='+1',
     manager=manager)
 
 total_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(
-    (450, 375), (100, 50)),
-    text='Print Count',
+    ((screen_size_x // 2) + 50, 0), (button_size_x, button_size_y)),
+    text=f'{count}',
     manager=manager)
 
 text_window = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(
-    (250, 100), (300, 50)),
+    ((screen_size_x // 2) - 200, (screen_size_y // 2) - 25), (400, 50)),
     text=f'This is will display the input.' ,
     manager=manager)
 
-
 clock = pygame.time.Clock()
 is_running = True
-
 
 while is_running:
     time_delta = clock.tick(60)/1000.0
@@ -53,10 +58,13 @@ while is_running:
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == hello_button:
                     text_window.set_text('Hello World!')
-                elif event.ui_element == bye_button:
-                    text_window.set_text('Bye Bye.')
+                elif event.ui_element == subtract_button:
+                    count -= 1
+                    total_button.set_text(f'{count}')
+                    text_window.set_text('Subtracting...')
                 elif event.ui_element == add_button:
                     count += 1
+                    total_button.set_text(f'{count}')
                     text_window.set_text('Adding...')
                 elif event.ui_element == total_button:
                     text_window.set_text(f'This is the current count: {count}')

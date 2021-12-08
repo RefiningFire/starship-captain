@@ -30,40 +30,73 @@
     {
         "colours":
         {
-            "normal_bg":"#45494e",
-            "hovered_bg":"#35393e",
-            "disabled_bg":"#25292e",
-            "selected_bg":"#193754",
-            "active_bg":"#493754",
-            "dark_bg":"#15191e",
+            "normal_bg":"#00000000",
+            "hovered_bg":"#00000000",
+            "disabled_bg":"#00000000",
+            "selected_bg":"#00000000",
+            "active_bg":"#00000000",
+            "dark_bg":"#00000000",
             "normal_text":"#c5cbd8",
             "hovered_text":"#FFFFFF",
             "selected_text":"#FFFFFF",
             "disabled_text":"#6d736f",
             "active_text":"#FFFFFF",
-            "normal_border": "#DDDDDD",
-            "hovered_border": "#B0B0B0",
-            "disabled_border": "#808080",
-            "selected_border": "#8080B0",
-            "active_border": "#8080B0"
+            "normal_border": "#00DDDDDD",
+            "hovered_border": "#00B0B0B0",
+            "disabled_border": "#00808080",
+            "selected_border": "#008080B0",
+            "active_border": "#008080B0"
+        },
+
+        "images":
+        {
+            "normal_image": {
+                "path": "sprites/basic_button_normal.png"
+            },
+            "hovered_image": {
+                "path": "sprites/basic_button_hovered.png"
+            }
         },
 
         "misc":
         {
-            "shape": "rounded_rectangle",
-            "shape_corner_radius": "20",
-            "border_width": "1",
-            "shadow_width": "1",
+            "border_width": "0",
+            "shadow_width": "0",
             "tool_tip_delay": "1.0",
             "text_horiz_alignment": "middle",
-            "text_vert_alignment": "middle",
+            "text_vert_alignment": "top",
             "text_horiz_alignment_padding": "5",
-            "text_vert_alignment_padding": "5",
+            "text_vert_alignment_padding": "12",
             "state_transitions":
             {
-                "normal_hovered": "0.2",
+                "normal_hovered": "0.05",
                 "hovered_normal": "0.2"
             }
+        }
+    },
+
+    "label":
+    {
+        "colours":
+        {
+            "dark_bg": "#254325",
+            "normal_text": "#555555",
+            "disabled_text": "#222222",
+            "text_shadow": "#111111"
+        },
+        "font":
+        {
+            "name": "Genesys",
+            "size": "20",
+            "bold": "0",
+            "italic": "0",
+            "regular_path": "fonts/Genesys.ttf"
+        },
+        "misc":
+        {
+            "text_shadow": "1",
+            "text_shadow_size": "1",
+            "text_shadow_offset": "0,0"
         }
     }
 }
