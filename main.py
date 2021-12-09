@@ -19,7 +19,24 @@ background = pygame.Surface((screen_size_x, screen_size_y))
 background.fill(pygame.Color('#000000'))
 
 manager = pygame_gui.UIManager((screen_size_x, screen_size_y), 'theme.json')
-manager_2 = pygame_gui.UIManager((screen_size_x, screen_size_y), 'button.json')
+
+
+class Fighter(pygame.sprite.Sprite):
+
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.sheet = pygame.image.load('sprites/meowx/Terran/Destroyer/96 X 60.png').convert_alpha()
+
+    def image_at(self, rectangle):
+        rect = pygame.Rect(rectangle)
+        image = pygame.Surface(rect.size).convert()
+        image.blit(self.sheet, (0, 0), rect)
+
+
+all_sprites = pygame.sprite.Group()
+image_coor = (50,50,100,100)
+player = Fighter.image_at(image_coor)
+all_sprites.add(player)
 
 hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(
     ((screen_size_x // 2) - 100, 0), (button_size_x, button_size_y)),
@@ -51,6 +68,9 @@ is_running = True
 
 while is_running:
     time_delta = clock.tick(60)/1000.0
+
+    all_sprites.draw(background)
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             is_running = False
