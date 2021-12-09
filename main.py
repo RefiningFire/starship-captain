@@ -19,6 +19,7 @@ background = pygame.Surface((screen_size_x, screen_size_y))
 background.fill(pygame.Color('#000000'))
 
 manager = pygame_gui.UIManager((screen_size_x, screen_size_y), 'theme.json')
+manager_2 = pygame_gui.UIManager((screen_size_x, screen_size_y), 'button.json')
 
 hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(
     ((screen_size_x // 2) - 100, 0), (button_size_x, button_size_y)),
