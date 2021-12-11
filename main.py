@@ -1,6 +1,6 @@
 import pygame
 import pygame_gui
-
+from spritesheet import Spritesheet
 
 count = 0
 
@@ -21,22 +21,8 @@ background.fill(pygame.Color('#000000'))
 manager = pygame_gui.UIManager((screen_size_x, screen_size_y), 'theme.json')
 
 
-class Fighter(pygame.sprite.Sprite):
-
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        self.sheet = pygame.image.load('sprites/meowx/Terran/Destroyer/96 X 60.png').convert_alpha()
-
-    def image_at(self, rectangle):
-        rect = pygame.Rect(rectangle)
-        image = pygame.Surface(rect.size).convert()
-        image.blit(self.sheet, (0, 0), rect)
 
 
-all_sprites = pygame.sprite.Group()
-image_coor = (50,50,100,100)
-player = Fighter.image_at(image_coor)
-all_sprites.add(player)
 
 hello_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(
     ((screen_size_x // 2) - 100, 0), (button_size_x, button_size_y)),
@@ -63,17 +49,29 @@ text_window = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(
     text=f'This is will display the input.' ,
     manager=manager)
 
+
+
+
+my_spritesheet = Spritesheet('sprites/meowx/Terran/Fighter/40 X 32.png')
+fighter = [my_spritesheet.parse_sprite('fighterN.png'),                 my_spritesheet.parse_sprite('fighterNbE.png'),    my_spritesheet.parse_sprite('fighterNNE.png'), my_spritesheet.parse_sprite('fighterNEbN.png'), my_spritesheet.parse_sprite('fighterNE.png'), my_spritesheet.parse_sprite('fighterNEbE.png')]
+
+index = 0
+
+
 clock = pygame.time.Clock()
 is_running = True
 
 while is_running:
     time_delta = clock.tick(60)/1000.0
 
-    all_sprites.draw(background)
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             is_running = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RIGHT:
+                index = (index + 1) % len(fighter)
+            elif event.key == pygame.K_LEFT:
+                index = (index - 1) % len(fighter)
 
         if event.type == pygame.USEREVENT:
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
@@ -93,7 +91,8 @@ while is_running:
         manager.process_events(event)
 
     manager.update(time_delta)
-
+    background.fill((0, 0, 0))
+    background.blit(fighter[index], (screen_size_x // 2, screen_size_y - 128))
     window_surface.blit(background, (0, 0))
     manager.draw_ui(window_surface)
 
