@@ -53,7 +53,44 @@ text_window = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(
 
 
 my_spritesheet = Spritesheet('sprites/meowx/Terran/Fighter/40 X 32.png')
-fighter = [my_spritesheet.parse_sprite('fighterN.png'),                 my_spritesheet.parse_sprite('fighterNbE.png'),    my_spritesheet.parse_sprite('fighterNNE.png'), my_spritesheet.parse_sprite('fighterNEbN.png'), my_spritesheet.parse_sprite('fighterNE.png'), my_spritesheet.parse_sprite('fighterNEbE.png')]
+
+fighter_loc_x = 200
+fighter_loc_y = 200
+
+fighter = [my_spritesheet.parse_sprite('fighter1.png'),                 my_spritesheet.parse_sprite('fighter2.png'),    my_spritesheet.parse_sprite('fighter3.png'), my_spritesheet.parse_sprite('fighter4.png'), my_spritesheet.parse_sprite('fighter5.png'), my_spritesheet.parse_sprite('fighter6.png'),
+my_spritesheet.parse_sprite('fighter7.png'),
+my_spritesheet.parse_sprite('fighter8.png'),
+my_spritesheet.parse_sprite('fighter9.png'),
+
+my_spritesheet.parse_sprite('fighter10.png'),
+my_spritesheet.parse_sprite('fighter11.png'),
+my_spritesheet.parse_sprite('fighter12.png'),
+my_spritesheet.parse_sprite('fighter13.png'),
+my_spritesheet.parse_sprite('fighter14.png'),
+my_spritesheet.parse_sprite('fighter15.png'),
+my_spritesheet.parse_sprite('fighter16.png'),
+my_spritesheet.parse_sprite('fighter17.png'),
+my_spritesheet.parse_sprite('fighter18.png'),
+
+my_spritesheet.parse_sprite('fighter19.png'),
+my_spritesheet.parse_sprite('fighter20.png'),
+my_spritesheet.parse_sprite('fighter21.png'),
+my_spritesheet.parse_sprite('fighter22.png'),
+my_spritesheet.parse_sprite('fighter23.png'),
+my_spritesheet.parse_sprite('fighter24.png'),
+my_spritesheet.parse_sprite('fighter25.png'),
+my_spritesheet.parse_sprite('fighter26.png'),
+my_spritesheet.parse_sprite('fighter27.png'),
+
+my_spritesheet.parse_sprite('fighter28.png'),
+my_spritesheet.parse_sprite('fighter29.png'),
+my_spritesheet.parse_sprite('fighter30.png'),
+my_spritesheet.parse_sprite('fighter31.png'),
+my_spritesheet.parse_sprite('fighter32.png'),
+my_spritesheet.parse_sprite('fighter33.png'),
+my_spritesheet.parse_sprite('fighter34.png'),
+my_spritesheet.parse_sprite('fighter35.png'),
+my_spritesheet.parse_sprite('fighter36.png')]
 
 index = 0
 
@@ -72,13 +109,18 @@ while is_running:
                 index = (index + 1) % len(fighter)
             elif event.key == pygame.K_LEFT:
                 index = (index - 1) % len(fighter)
+            if event.key == pygame.K_UP:
+                fighter_loc_x += 1
+            elif event.key == pygame.K_DOWN:
+                fighter_loc_x -= 1
+
 
         if event.type == pygame.USEREVENT:
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == hello_button:
                     text_window.set_text('Hello World!')
                 elif event.ui_element == subtract_button:
-                    count -= 1
+                    count -= 1s
                     total_button.set_text(f'{count}')
                     text_window.set_text('Subtracting...')
                 elif event.ui_element == add_button:
@@ -92,7 +134,7 @@ while is_running:
 
     manager.update(time_delta)
     background.fill((0, 0, 0))
-    background.blit(fighter[index], (screen_size_x // 2, screen_size_y - 128))
+    background.blit(fighter[index], (fighter_loc_x, fighter_loc_y))
     window_surface.blit(background, (0, 0))
     manager.draw_ui(window_surface)
 
