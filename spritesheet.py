@@ -24,14 +24,20 @@ class Spritesheet:
         image = self.get_sprite(x, y, w, h)
         return image
 
-    def frame_sheet(self):
+    def frame_sheet(self,frame_index):
+        self.frame_index = frame_index
+
         # Sheet = [self.parse_sprite(f'{self.name}1.png),       self.parse_sprite(f'{self.name}2.png'), self.parse_sprite(f'{self.name}3.png')] etc
         sheet = [self.parse_sprite(f'{self.name}{i+1}.png') for i in range(36)]
         return sheet
 
 class Starship(Spritesheet):
-    def set_stats(self, mass, momentum, acceleration, top_speed):
+    def set_stats(self, mass, momentum, acceleration, top_speed, current_speed):
         self.mass = mass
         self.momentum = momentum
         self.acceleration = acceleration
         self.top_speed = top_speed
+        self.current_speed = current_speed
+
+    def move_forward(self):
+        pass
