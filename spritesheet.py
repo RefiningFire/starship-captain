@@ -2,7 +2,8 @@ import pygame
 import json
 
 class Spritesheet:
-    def __init__(self, name, filename):
+    def __init__(self, faction, name, filename):
+        self.faction = faction
         self.name = name
         self.filename = filename
         self.sprite_sheet = pygame.image.load(filename).convert()
@@ -27,3 +28,10 @@ class Spritesheet:
         # Sheet = [self.parse_sprite(f'{self.name}1.png),       self.parse_sprite(f'{self.name}2.png'), self.parse_sprite(f'{self.name}3.png')] etc
         sheet = [self.parse_sprite(f'{self.name}{i+1}.png') for i in range(36)]
         return sheet
+
+class Starship(Spritesheet):
+    def set_stats(self, mass, momentum, acceleration, top_speed):
+        self.mass = mass
+        self.momentum = momentum
+        self.acceleration = acceleration
+        self.top_speed = top_speed

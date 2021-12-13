@@ -4,7 +4,7 @@ A python learning project, in the form of a text adventure game about interstell
 #Terran Ships
 Interceptor 32 x 24
 Fighter 40 x 32
-Heavy Fighter 48 x 35
+Bomber 48 x 35
 
 Courier 48 x 38
 Transport 56 x 34

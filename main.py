@@ -1,6 +1,6 @@
 import pygame
 import pygame_gui
-from spritesheet import Spritesheet
+from spritesheet import Spritesheet, Starship
 
 count = 0
 
@@ -53,12 +53,15 @@ text_window = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(
 
 
 
-my_spritesheet = Spritesheet('interceptor','sprites/meowx/Terran/Interceptor/32 X 24.png')
-fighter = my_spritesheet.frame_sheet()
+player_ship = Starship('Terran','interceptor','sprites/meowx/Terran/Interceptor/32 X 24.png')
+player_ship.set_stats(1,2,3,4)
 
-fighter_loc_x = 200
-fighter_loc_y = 200
+player_sprite = player_ship.frame_sheet()
 
+player_sprite_loc_x = 200
+player_sprite_loc_y = 200
+
+# This stores the current frame used for the player sprite. On the sheet, 1 is northfacing, 9 is east, 18 is south, and 27 is west, with intermediate frames up to 36.
 spritesheet_index = 0
 
 clock = pygame.time.Clock()
@@ -69,13 +72,13 @@ while is_running:
 
     keys = pygame.key.get_pressed()  #checking pressed keys
     if keys[pygame.K_RIGHT]:
-        spritesheet_index = (spritesheet_index + 1) % len(fighter)
+        spritesheet_index = (spritesheet_index + 1) % len(player_sprite)
     if keys[pygame.K_LEFT]:
-        spritesheet_index = (spritesheet_index - 1) % len(fighter)
+        spritesheet_index = (spritesheet_index - 1) % len(player_sprite)
     if keys[pygame.K_UP]:
-        fighter_loc_y -= 3
+        player_sprite_loc_y -= 3
     if keys[pygame.K_DOWN]:
-        fighter_loc_y += 3
+        player_sprite_loc_y += 3
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -101,7 +104,7 @@ while is_running:
     manager.update(time_delta)
     background.fill((0, 0, 0))
     background.blit(starfield,(0,0))
-    background.blit(fighter[spritesheet_index], (fighter_loc_x, fighter_loc_y))
+    background.blit(player_sprite[spritesheet_index], (player_sprite_loc_x, player_sprite_loc_y))
     window_surface.blit(background, (0, 0))
     manager.draw_ui(window_surface)
 
