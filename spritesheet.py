@@ -24,8 +24,10 @@ class Spritesheet:
         image = self.get_sprite(x, y, w, h)
         return image
 
-    def frame_sheet(self,frame_index):
+    def frame_sheet(self,frame_index, loc_x, loc_y):
         self.frame_index = frame_index
+        self.loc_x = loc_x
+        self.loc_y = loc_y
 
         # Sheet = [self.parse_sprite(f'{self.name}1.png),       self.parse_sprite(f'{self.name}2.png'), self.parse_sprite(f'{self.name}3.png')] etc
         sheet = [self.parse_sprite(f'{self.name}{i+1}.png') for i in range(36)]
