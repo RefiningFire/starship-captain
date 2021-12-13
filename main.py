@@ -56,9 +56,8 @@ text_window = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(
 player_ship = Starship('Terran','interceptor','sprites/meowx/Terran/Interceptor/32 X 24.png')
 player_ship.set_stats(1,2,3,4,0)
 
+# Create the players ship(index, loc_x, loc_y)
 player_sprite = player_ship.frame_sheet(0, 200, 200)
-
-# This stores the current frame used for the player sprite. On the sheet, 1 is northfacing, 9 is east, 18 is south, and 27 is west, with intermediate frames up to 36.
 
 clock = pygame.time.Clock()
 is_running = True
