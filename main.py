@@ -53,7 +53,7 @@ text_window = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(
 
 
 
-my_spritesheet = Spritesheet('fighter','sprites/meowx/Terran/Fighter/40 X 32.png')
+my_spritesheet = Spritesheet('interceptor','sprites/meowx/Terran/Interceptor/32 X 24.png')
 fighter = my_spritesheet.frame_sheet()
 
 fighter_loc_x = 200
