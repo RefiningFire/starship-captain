@@ -57,13 +57,14 @@ text_window = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(
 player_ship = Starship('Terran','fighter','sprites/meowx/Terran/Fighter/40 X 32.png')
 
 player_ship.set_stats(
-1.0, # Mass, measured in tons?
-1.0, # Handling, representing sprite update (1/360) per frame (at 60 FPS)
+5.0, # Mass, measured in tons?
+2.0, # Handling, RPM? F-16 180 in 13 sec (2.3 rpm), Carrier 3-5 min (0.3 - 0.2)
 7.0, # Speed
 
-0.0, # Current_handling=0.0
-0.0, # Current_speed=0.0
-0 # Current_direction=0
+ # turning_momentum=0.0
+ # foward_momentum=0.0
+ # Current_direction=0
+ # slow_turn_counter=0
 )
 
 # Create the players ship(index, loc_x, loc_y)
@@ -80,21 +81,21 @@ while is_running:
         player_ship.powered_turn(1)
     elif keys[pygame.K_LEFT]:
         player_ship.powered_turn(-1)
-    elif player_ship.current_handling > 0:
+    elif player_ship.turning_momentum > 0:
         player_ship.make_turn(player_ship.current_direction)
-        player_ship.current_handling -= player_ship.handling / (player_ship.mass * 100)
-    elif player_ship.current_handling < 0:
-        player_ship.current_handling = 0
+        player_ship.turning_momentum -= player_ship.handling / player_ship.mass
+    elif player_ship.turning_momentum < 0:
+        player_ship.turning_momentum = 0
 
     if keys[pygame.K_UP]:
         player_ship.power_forward()
     elif keys[pygame.K_DOWN]:
         player_ship.move_backward()
-    elif player_ship.current_speed > 0:
+    elif player_ship.foward_momentum > 0:
         player_ship.move_forward()
-        player_ship.current_speed -= player_ship.handling / player_ship.mass
-    elif player_ship.current_speed < 0:
-        player_ship.current_speed = 0
+        player_ship.foward_momentum -= player_ship.handling / player_ship.mass
+    elif player_ship.foward_momentum < 0:
+        player_ship.foward_momentum = 0
 
 
     for event in pygame.event.get():

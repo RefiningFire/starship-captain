@@ -37,36 +37,45 @@ class Spritesheet:
         return self.sheet
 
 class Starship(Spritesheet):
-    def set_stats(self, mass, handling, speed, current_handling=0.0, current_speed=0.0, current_direction=0):
+    def set_stats(self, mass, handling, speed, turning_momentum=0.0, foward_momentum=0.0, current_direction=0, slow_turn_counter=0):
         self.mass = mass
         self.handling = handling
         self.speed = speed
 
-        self.current_handling = current_handling
-        self.current_speed = current_speed
+        self.turning_momentum = turning_momentum
+        self.foward_momentum = foward_momentum
         self.current_direction = current_direction
 
+        self.slow_turn_counter = slow_turn_counter
+
     def make_turn(self, passed_direction):
-        self.frame_index = (self.frame_index + int(passed_direction * self.current_handling)) % len(self.sheet)
+        # First checks for a slow turner, and if true, it uses a counter incrementer so that turns "in between the turns" are tracked. Otherwise this fails, since the modulo operator cannot work with number that is less than one.
+        if self.slow_turn_counter < 1 and self.turning_momentum < 1:
+            self.slow_turn_counter += self.turning_momentum
+        elif self.turning_momentum >= 1:
+            self.frame_index = (self.frame_index + int(passed_direction * self.turning_momentum)) % len(self.sheet)
+        else:
+            self.frame_index = (self.frame_index + int(passed_direction * self.slow_turn_counter)) % len(self.sheet)
+            self.slow_turn_counter = 0
 
         # This keeps momentum going in the same direction
         self.current_direction = passed_direction
 
     def powered_turn(self, passed_direction):
         self.make_turn(passed_direction)
-        if self.current_handling < self.handling:
-            self.current_handling += self.handling / self.mass
+        if self.turning_momentum < self.handling:
+            self.turning_momentum += self.handling / self.mass
 
 
     def move_forward(self):
-        self.loc_x += self.current_speed * math.sin(math.radians(self.frame_index))
-        self.loc_y -= self.current_speed * math.cos(math.radians(self.frame_index))
+        self.loc_x += self.foward_momentum * math.sin(math.radians(self.frame_index))
+        self.loc_y -= self.foward_momentum * math.cos(math.radians(self.frame_index))
 
     def move_backward(self):
-        self.loc_x += self.current_speed * math.sin(math.radians(self.frame_index))
-        self.loc_y -= self.current_speed * math.cos(math.radians(self.frame_index))
+        self.loc_x += self.foward_momentum * math.sin(math.radians(self.frame_index))
+        self.loc_y -= self.foward_momentum * math.cos(math.radians(self.frame_index))
 
     def power_forward(self):
         self.move_forward()
-        if self.current_speed < self.speed:
-            self.current_speed += self.handling / self.mass
+        if self.foward_momentum < self.speed:
+            self.foward_momentum += self.handling / self.mass
