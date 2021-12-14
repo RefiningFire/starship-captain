@@ -37,9 +37,10 @@ class Spritesheet:
         return self.sheet
 
 class Starship(Spritesheet):
-    def set_stats(self, mass, handling, speed, turning_momentum=0.0, foward_momentum=0.0, current_direction=0, slow_turn_counter=0):
+    def set_stats(self, mass, manuverability, acceleration, speed, turning_momentum=0.0, foward_momentum=0.0, current_direction=0, slow_turn_counter=0):
         self.mass = mass
-        self.handling = handling
+        self.manuverability = manuverability
+        self.acceleration = acceleration
         self.speed = speed
 
         self.turning_momentum = turning_momentum
@@ -50,21 +51,34 @@ class Starship(Spritesheet):
 
     def make_turn(self, passed_direction):
         # First checks for a slow turner, and if true, it uses a counter incrementer so that turns "in between the turns" are tracked. Otherwise this fails, since the modulo operator cannot work with number that is less than one.
-        if self.slow_turn_counter < 1 and self.turning_momentum < 1:
+        if self.slow_turn_counter < 1 and self.turning_momentum < 1 and passed_direction == self.current_direction:
             self.slow_turn_counter += self.turning_momentum
+        # If turning_momentum is fast enough execute normal turn.
         elif self.turning_momentum >= 1:
             self.frame_index = (self.frame_index + int(passed_direction * self.turning_momentum)) % len(self.sheet)
+        # Turn 1 degree and reset slow_turn_counter.
+        elif passed_direction != self.current_direction:
+
         else:
             self.frame_index = (self.frame_index + int(passed_direction * self.slow_turn_counter)) % len(self.sheet)
             self.slow_turn_counter = 0
 
-        # This keeps momentum going in the same direction
-        self.current_direction = passed_direction
+    def powered_turn(self, passed_direction, void_drag):
+        # A new turn from 0 or continuing along with turning_momentum
+        if passed_direction == self.current_direction or self.current_direction == 0:
+            self.make_turn(passed_direction)
+            # This keeps momentum going in the same direction
+            self.current_direction = passed_direction
+        elif self.turning_momentum > 0:
+            self.make_turn(passed_direction)
+            self.turning_momentum -= self.manuverability / void_drag
+        elif self.turning_momentum <= 0:
+            self.current_direction = 0
+        else:
+            print('fourth option')
 
-    def powered_turn(self, passed_direction):
-        self.make_turn(passed_direction)
-        if self.turning_momentum < self.handling:
-            self.turning_momentum += self.handling / self.mass
+        if self.turning_momentum < self.manuverability:
+            self.turning_momentum += self.manuverability / void_drag
 
 
     def move_forward(self):
@@ -75,7 +89,7 @@ class Starship(Spritesheet):
         self.loc_x += self.foward_momentum * math.sin(math.radians(self.frame_index))
         self.loc_y -= self.foward_momentum * math.cos(math.radians(self.frame_index))
 
-    def power_forward(self):
+    def power_forward(self, void_drag):
         self.move_forward()
         if self.foward_momentum < self.speed:
-            self.foward_momentum += self.handling / self.mass
+            self.foward_momentum += self.acceleration / void_drag

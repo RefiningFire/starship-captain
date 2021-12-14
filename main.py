@@ -1,6 +1,9 @@
 import pygame
 import pygame_gui
+import math
 from spritesheet import Spritesheet, Starship
+
+void_drag = 10 # To give empty space a feeling of heft and resistance.
 
 count = 0
 
@@ -57,9 +60,10 @@ text_window = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(
 player_ship = Starship('Terran','fighter','sprites/meowx/Terran/Fighter/40 X 32.png')
 
 player_ship.set_stats(
-5.0, # Mass, measured in tons?
-2.0, # Handling, RPM? F-16 180 in 13 sec (2.3 rpm), Carrier 3-5 min (0.3 - 0.2)
-7.0, # Speed
+20000, # Mass, measured in tons? F-16 10.5 tons, Carrier 101,196 tons
+1.0, # manuverability, RPM? F-16 180 in 13 sec (2.3 rpm), Carrier 3-5 min (0.3 - 0.2)
+0.4, # acceleration, how quickly can reach speed.
+2.0, # Speed
 
  # turning_momentum=0.0
  # foward_momentum=0.0
@@ -78,22 +82,25 @@ while is_running:
 
     keys = pygame.key.get_pressed()  #checking pressed keys
     if keys[pygame.K_RIGHT]:
-        player_ship.powered_turn(1)
+        player_ship.powered_turn(1, void_drag)
     elif keys[pygame.K_LEFT]:
-        player_ship.powered_turn(-1)
+        player_ship.powered_turn(-1, void_drag)
     elif player_ship.turning_momentum > 0:
         player_ship.make_turn(player_ship.current_direction)
-        player_ship.turning_momentum -= player_ship.handling / player_ship.mass
+        # Larger ships take longer to slow down, mitigated by manuverability and void_drag
+        player_ship.turning_momentum -= player_ship.manuverability / math.sqrt(player_ship.mass)
     elif player_ship.turning_momentum < 0:
-        player_ship.turning_momentum = 0
+        player_ship.turning_momentum, player_ship.slow_turn_counter = 0, 0
+
 
     if keys[pygame.K_UP]:
-        player_ship.power_forward()
+        player_ship.power_forward(void_drag)
     elif keys[pygame.K_DOWN]:
         player_ship.move_backward()
     elif player_ship.foward_momentum > 0:
         player_ship.move_forward()
-        player_ship.foward_momentum -= player_ship.handling / player_ship.mass
+        # Larger ships take longer to slow down, mitigated by manuverability and void_drag
+        player_ship.foward_momentum -= player_ship.manuverability / math.sqrt(player_ship.mass)
     elif player_ship.foward_momentum < 0:
         player_ship.foward_momentum = 0
 
