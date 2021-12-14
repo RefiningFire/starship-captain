@@ -50,35 +50,46 @@ class Starship(Spritesheet):
         self.slow_turn_counter = slow_turn_counter
 
     def make_turn(self, passed_direction):
-        # First checks for a slow turner, and if true, it uses a counter incrementer so that turns "in between the turns" are tracked. Otherwise this fails, since the modulo operator cannot work with number that is less than one.
-        if self.slow_turn_counter < 1 and self.turning_momentum < 1 and passed_direction == self.current_direction:
+
+        # If momentum is in opposite direction of powered movement, decrease the turning momentum, but keep turning in the direction of momentum.
+        if passed_direction != self.current_direction:
+            self.turning_momentum -= self.manuverability / math.sqrt(self.mass)
+
+        # Checks for a slow turner. Must use incrementing because modulo in self.frame_index turning doesn't work.
+        if self.slow_turn_counter < 1 and self.turning_momentum < 1:
             self.slow_turn_counter += self.turning_momentum
+
         # If turning_momentum is fast enough execute normal turn.
         elif self.turning_momentum >= 1:
-            self.frame_index = (self.frame_index + int(passed_direction * self.turning_momentum)) % len(self.sheet)
-        # Turn 1 degree and reset slow_turn_counter.
-        elif passed_direction != self.current_direction:
+            self.frame_index = (self.frame_index + int(self.current_direction * self.turning_momentum)) % len(self.sheet)
 
-        else:
-            self.frame_index = (self.frame_index + int(passed_direction * self.slow_turn_counter)) % len(self.sheet)
             self.slow_turn_counter = 0
 
-    def powered_turn(self, passed_direction, void_drag):
+        # if continuing in same direction, & a slow turner, execute a slow turn.
+        else:
+            self.frame_index = (self.frame_index + int(self.current_direction * self.slow_turn_counter)) % len(self.sheet)
+
+            self.slow_turn_counter = 0
+
+    def powered_turn(self, passed_direction):
         # A new turn from 0 or continuing along with turning_momentum
         if passed_direction == self.current_direction or self.current_direction == 0:
             self.make_turn(passed_direction)
-            # This keeps momentum going in the same direction
+
+            # Increase momentum because of powered turn.
+            if self.turning_momentum < self.manuverability:
+                self.turning_momentum += self.manuverability / math.sqrt(self.mass)
+
+            # This keeps momentum going in the same direction.
             self.current_direction = passed_direction
+
         elif self.turning_momentum > 0:
             self.make_turn(passed_direction)
-            self.turning_momentum -= self.manuverability / void_drag
         elif self.turning_momentum <= 0:
             self.current_direction = 0
         else:
-            print('fourth option')
+            print('powered_turn else statement triggered')
 
-        if self.turning_momentum < self.manuverability:
-            self.turning_momentum += self.manuverability / void_drag
 
 
     def move_forward(self):
