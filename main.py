@@ -60,9 +60,9 @@ text_window = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(
 player_ship = Starship('Terran','fighter','sprites/meowx/Terran/Fighter/40 X 32.png')
 
 player_ship.set_stats(
-20.5, # Mass, measured in tons? F-16 10.5 tons, Carrier 101,196 tons
+100000, # Mass, measured in tons? F-16 10.5 tons, Carrier 101,196 tons
 0.3, # manuverability, RPM? F-16 180 in 13 sec (2.3 rpm), Carrier 3-5 min (0.3 - 0.2)
-0.3, # acceleration, how quickly can reach speed.
+0.4, # acceleration, how quickly can reach speed.
 2.4, # Speed
 
  # turning_momentum=0.0
@@ -94,7 +94,7 @@ while is_running:
 
 
     if keys[pygame.K_UP]:
-        player_ship.power_forward(void_drag)
+        player_ship.power_forward()
     elif keys[pygame.K_DOWN]:
         player_ship.move_backward()
     elif player_ship.foward_momentum > 0:

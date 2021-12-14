@@ -100,7 +100,7 @@ class Starship(Spritesheet):
         self.loc_x += self.foward_momentum * math.sin(math.radians(self.frame_index))
         self.loc_y -= self.foward_momentum * math.cos(math.radians(self.frame_index))
 
-    def power_forward(self, void_drag):
+    def power_forward(self):
         self.move_forward()
         if self.foward_momentum < self.speed:
-            self.foward_momentum += self.acceleration / void_drag
+            self.foward_momentum += self.acceleration / math.sqrt(self.mass)
