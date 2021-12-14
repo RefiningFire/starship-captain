@@ -4,6 +4,7 @@ from spritesheet import Spritesheet, Starship
 
 count = 0
 
+FPS = 60
 screen_size_x = 1280
 screen_size_y = 720
 
@@ -53,11 +54,20 @@ text_window = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(
 
 
 
-player_ship = Starship('Terran','interceptor','sprites/meowx/Terran/Interceptor/32 X 24.png')
-player_ship.set_stats(1,2,3,4,0)
+player_ship = Starship('Terran','fighter','sprites/meowx/Terran/Fighter/40 X 32.png')
+
+player_ship.set_stats(
+1.0, # Mass, measured in tons?
+1.0, # Handling, representing sprite update (1/360) per frame (at 60 FPS)
+7.0, # Speed
+
+0.0, # Current_handling=0.0
+0.0, # Current_speed=0.0
+0 # Current_direction=0
+)
 
 # Create the players ship(index, loc_x, loc_y)
-player_sprite = player_ship.frame_sheet(0, 200, 200)
+player_sprite = player_ship.set_frame_sheet(0, 200, 200)
 
 clock = pygame.time.Clock()
 is_running = True
@@ -67,13 +77,25 @@ while is_running:
 
     keys = pygame.key.get_pressed()  #checking pressed keys
     if keys[pygame.K_RIGHT]:
-        player_ship.frame_index = (player_ship.frame_index + 1) % len(player_sprite)
-    if keys[pygame.K_LEFT]:
-        player_ship.frame_index = (player_ship.frame_index - 1) % len(player_sprite)
+        player_ship.powered_turn(1)
+    elif keys[pygame.K_LEFT]:
+        player_ship.powered_turn(-1)
+    elif player_ship.current_handling > 0:
+        player_ship.make_turn(player_ship.current_direction)
+        player_ship.current_handling -= player_ship.handling / (player_ship.mass * 100)
+    elif player_ship.current_handling < 0:
+        player_ship.current_handling = 0
+
     if keys[pygame.K_UP]:
-        player_ship.loc_y -= 3
-    if keys[pygame.K_DOWN]:
-        player_ship.loc_y += 3
+        player_ship.power_forward()
+    elif keys[pygame.K_DOWN]:
+        player_ship.move_backward()
+    elif player_ship.current_speed > 0:
+        player_ship.move_forward()
+        player_ship.current_speed -= player_ship.handling / player_ship.mass
+    elif player_ship.current_speed < 0:
+        player_ship.current_speed = 0
+
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -104,3 +126,4 @@ while is_running:
     manager.draw_ui(window_surface)
 
     pygame.display.update()
+    clock.tick(FPS)
