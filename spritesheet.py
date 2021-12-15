@@ -37,70 +37,89 @@ class Spritesheet:
         return self.sheet
 
 class Starship(Spritesheet):
-    def set_stats(self, mass, manuverability, acceleration, speed, turning_momentum=0.0, foward_momentum=0.0, current_direction=0, slow_turn_counter=0):
+    def set_stats(self, mass, manuverability, acceleration, speed, rotation_momentum=0.0, forward_momentum=0.0, current_rotation=0, current_direction=0, slow_turn_counter=0):
         self.mass = mass
         self.manuverability = manuverability
         self.acceleration = acceleration
         self.speed = speed
 
-        self.turning_momentum = turning_momentum
-        self.foward_momentum = foward_momentum
+        self.rotation_momentum = rotation_momentum
+        self.forward_momentum = forward_momentum
+        self.current_rotation = current_rotation
         self.current_direction = current_direction
 
         self.slow_turn_counter = slow_turn_counter
 
-    def make_turn(self, passed_direction):
+    def make_turn(self, passed_rotation):
 
         # If momentum is in opposite direction of powered movement, decrease the turning momentum, but keep turning in the direction of momentum.
-        if passed_direction != self.current_direction:
-            self.turning_momentum -= self.manuverability / math.sqrt(self.mass)
+        if passed_rotation != self.current_rotation:
+            self.rotation_momentum -= self.manuverability / math.sqrt(self.mass)
 
         # Checks for a slow turner. Must use incrementing because modulo in self.frame_index turning doesn't work.
-        if self.slow_turn_counter < 1 and self.turning_momentum < 1:
-            self.slow_turn_counter += self.turning_momentum
+        if self.slow_turn_counter < 1 and self.rotation_momentum < 1:
+            self.slow_turn_counter += self.rotation_momentum
 
-        # If turning_momentum is fast enough execute normal turn.
-        elif self.turning_momentum >= 1:
-            self.frame_index = (self.frame_index + int(self.current_direction * self.turning_momentum)) % len(self.sheet)
+        # If rotation_momentum is fast enough execute normal turn.
+        elif self.rotation_momentum >= 1:
+            self.frame_index = (self.frame_index + int(self.current_rotation * self.rotation_momentum)) % len(self.sheet)
 
             self.slow_turn_counter = 0
 
         # if continuing in same direction, & a slow turner, execute a slow turn.
         else:
-            self.frame_index = (self.frame_index + int(self.current_direction * self.slow_turn_counter)) % len(self.sheet)
+            self.frame_index = (self.frame_index + int(self.current_rotation * self.slow_turn_counter)) % len(self.sheet)
 
             self.slow_turn_counter = 0
 
-    def powered_turn(self, passed_direction):
-        # A new turn from 0 or continuing along with turning_momentum
-        if passed_direction == self.current_direction or self.current_direction == 0:
-            self.make_turn(passed_direction)
+    def powered_turn(self, passed_rotation):
+        # A new turn from 0 or continuing along with rotation_momentum
+        if passed_rotation == self.current_rotation or self.current_rotation == 0:
 
             # Increase momentum because of powered turn.
-            if self.turning_momentum < self.manuverability:
-                self.turning_momentum += self.manuverability / math.sqrt(self.mass)
+            if self.rotation_momentum < self.manuverability:
+                self.rotation_momentum += self.manuverability / math.sqrt(self.mass)
+
+            self.make_turn(passed_rotation)
 
             # This keeps momentum going in the same direction.
-            self.current_direction = passed_direction
+            self.current_rotation = passed_rotation
 
-        elif self.turning_momentum > 0:
-            self.make_turn(passed_direction)
-        elif self.turning_momentum <= 0:
-            self.current_direction = 0
+        elif self.rotation_momentum > 0:
+            self.make_turn(passed_rotation)
+        elif self.rotation_momentum <= 0:
+            self.current_rotation = 0
         else:
             print('powered_turn else statement triggered')
 
 
 
-    def move_forward(self):
-        self.loc_x += self.foward_momentum * math.sin(math.radians(self.frame_index))
-        self.loc_y -= self.foward_momentum * math.cos(math.radians(self.frame_index))
+    def make_move(self, passed_direction):
 
-    def move_backward(self):
-        self.loc_x += self.foward_momentum * math.sin(math.radians(self.frame_index))
-        self.loc_y -= self.foward_momentum * math.cos(math.radians(self.frame_index))
+        # If momentum is in opposite direction of powered movement, decrease the forward_momentum, but keep moving in the direction of momentum.
+        if passed_direction != self.current_direction:
+            self.forward_momentum -= (self.acceleration + self.manuverability) / math.sqrt(self.mass)
 
-    def power_forward(self):
-        self.move_forward()
-        if self.foward_momentum < self.speed:
-            self.foward_momentum += self.acceleration / math.sqrt(self.mass)
+        # Move in the direction of forward_momentum.
+        self.loc_x += (self.forward_momentum * math.sin(math.radians(self.frame_index)) * self.current_direction)
+        self.loc_y -= (self.forward_momentum * math.cos(math.radians(self.frame_index)) * self.current_direction)
+
+    def powered_move(self, passed_direction):
+        # A new move from 0 or continuing along with forward_momentum.
+        if passed_direction == self.current_direction or self.current_direction == 0:
+            # Increase momentum because of powered move, up to max speed.
+            if self.forward_momentum < self.speed:
+                self.forward_momentum += self.acceleration / math.sqrt(self.mass)
+
+            self.make_move(passed_direction)
+
+            # This keeps momentum going in the same direction.
+            self.current_direction= passed_direction
+
+        elif self.forward_momentum > 0:
+            self.make_move(passed_direction)
+        elif self.forward_momentum <= 0:
+            self.current_direction = 0
+            self.forward_momentum = 0
+        else:
+            print('powered_move else statement triggered')

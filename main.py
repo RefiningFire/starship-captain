@@ -59,20 +59,24 @@ text_window = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(
 
 player_ship = Starship('Terran','fighter','sprites/meowx/Terran/Fighter/40 X 32.png')
 
-player_ship.set_stats(
-100000, # Mass, measured in tons? F-16 10.5 tons, Carrier 101,196 tons
-0.3, # manuverability, RPM? F-16 180 in 13 sec (2.3 rpm), Carrier 3-5 min (0.3 - 0.2)
-0.4, # acceleration, how quickly can reach speed.
-2.4, # Speed
+fighter_ship = (10.5,2.3,0.8,10.0)
+carrier_ship = (100000,0.3,0.4,2.4)
 
- # turning_momentum=0.0
- # foward_momentum=0.0
- # Current_direction=0
+player_ship.set_stats(*carrier_ship
+ # Mass, measured in tons? F-16 10.5 tons, Carrier 101,196 tons
+ # manuverability, RPM? F-16 180 in 13 sec (2.3 rpm), Carrier 3-5 min (0.3 - 0.2)
+ # acceleration, how quickly can reach speed.
+ # Speed
+
+ # rotation_momentum=0.0
+ # forward_momentum=0.0
+ # current_rotation=0
+ # current_direction=0
  # slow_turn_counter=0
 )
 
 # Create the players ship(index, loc_x, loc_y)
-player_sprite = player_ship.set_frame_sheet(0, 200, 200)
+player_sprite = player_ship.set_frame_sheet(90, 200, 100)
 
 clock = pygame.time.Clock()
 is_running = True
@@ -85,24 +89,30 @@ while is_running:
         player_ship.powered_turn(1)
     elif keys[pygame.K_LEFT]:
         player_ship.powered_turn(-1)
-    elif player_ship.turning_momentum > 0:
-        player_ship.make_turn(player_ship.current_direction)
+    elif player_ship.rotation_momentum > 0:
+        player_ship.make_turn(player_ship.current_rotation)
         # Larger ships take longer to slow down, mitigated by manuverability and void_drag
-        player_ship.turning_momentum -= player_ship.manuverability / math.sqrt(player_ship.mass)
-    elif player_ship.turning_momentum < 0:
-        player_ship.turning_momentum, player_ship.slow_turn_counter = 0, 0
+        player_ship.rotation_momentum -= player_ship.manuverability / math.sqrt(player_ship.mass)
+    elif player_ship.rotation_momentum < 0:
+        player_ship.rotation_momentum, player_ship.slow_turn_counter = 0, 0
 
 
     if keys[pygame.K_UP]:
-        player_ship.power_forward()
+        #player_ship.power_forward()
+        player_ship.powered_move(1)
     elif keys[pygame.K_DOWN]:
-        player_ship.move_backward()
-    elif player_ship.foward_momentum > 0:
-        player_ship.move_forward()
+        #player_ship.move_backward()
+        player_ship.powered_move(-1)
+    elif player_ship.forward_momentum > 0:
+
         # Larger ships take longer to slow down, mitigated by manuverability and void_drag
-        player_ship.foward_momentum -= player_ship.manuverability / math.sqrt(player_ship.mass)
-    elif player_ship.foward_momentum < 0:
-        player_ship.foward_momentum = 0
+        # If no forward power is applied, but there is still forward_momentum, slow the ship down.
+        player_ship.forward_momentum -= player_ship.manuverability / math.sqrt(player_ship.mass)
+
+        player_ship.make_move(player_ship.current_direction)
+
+    elif player_ship.forward_momentum < 0:
+        player_ship.forward_momentum = 0
 
 
     for event in pygame.event.get():
