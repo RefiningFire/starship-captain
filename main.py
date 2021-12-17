@@ -19,7 +19,25 @@ pygame.init()
 pygame.display.set_caption('Quick Start')
 window_surface = pygame.display.set_mode((screen_size_x, screen_size_y))
 
-starfield = pygame.image.load('sprites/Starfield.png')
+
+starfield_background = pygame.image.load('sprites/Starfield.png')
+starfield_width = starfield_background.get_width()
+starfield_height = starfield_background.get_height()
+starfield_movement_x = 0
+starfield_movement_y = 0
+
+
+starfield_data = [
+[starfield_background,0,1,1,1],
+[starfield_background,starfield_width,0,1,1],
+[starfield_background,0,starfield_height,1,1],
+[starfield_background,starfield_width,starfield_height,1,1]
+]
+
+
+#starfield1, starfield1_x, starfield1_y = pygame.image.load('sprites/Starfield.png'), 0, 0
+
+
 background = pygame.Surface((screen_size_x, screen_size_y))
 background.fill(pygame.Color('#000000'))
 
@@ -50,7 +68,7 @@ total_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(
     manager=manager)
 
 text_window = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(
-    ((screen_size_x // 2) - 200, (screen_size_y // 2) - 25), (400, 50)),
+    ((screen_size_x // 2) - 200, (screen_size_y) - 75), (400, 50)),
     text=f'This is will display the input.' ,
     manager=manager)
 
@@ -62,7 +80,7 @@ player_ship = Starship('Terran','fighter','sprites/meowx/Terran/Fighter/40 X 32.
 fighter_ship = (10.5,2.3,0.8,10.0)
 carrier_ship = (100000,0.3,0.4,2.4)
 
-player_ship.set_stats(*carrier_ship
+player_ship.set_stats(*fighter_ship
  # Mass, measured in tons? F-16 10.5 tons, Carrier 101,196 tons
  # manuverability, RPM? F-16 180 in 13 sec (2.3 rpm), Carrier 3-5 min (0.3 - 0.2)
  # acceleration, how quickly can reach speed.
@@ -115,6 +133,7 @@ while is_running:
         player_ship.forward_momentum = 0
 
 
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             is_running = False
@@ -138,8 +157,47 @@ while is_running:
 
     manager.update(time_delta)
     background.fill((0, 0, 0))
-    background.blit(starfield,(0,0))
-    background.blit(player_sprite[player_ship.frame_index], (player_ship.loc_x, player_ship.loc_y))
+
+    # These variables are used so player_movement calculations are performed less frequently than if they were calculated for each screen movement.
+    player_movement_x = (player_ship.forward_momentum * math.sin(math.radians(player_ship.frame_index)) * player_ship.current_direction)
+    player_movement_y = (player_ship.forward_momentum * math.cos(math.radians(player_ship.frame_index)) * player_ship.current_direction)
+
+    # Adjust the starfield coordinates by the player_ship movement. The player ship in this case will always be at the middle of the screen.
+    for i in range(len(starfield_data)):
+        starfield_data[i][1] -= player_movement_x
+        starfield_data[i][2] += player_movement_y
+
+        # These loops check to see if
+        if starfield_data[i][1] < starfield_width * -1:
+            starfield_data[i][3] += 2
+            starfield_data[i][1] = starfield_width * starfield_data[i][3] - player_movement_x
+        elif starfield_data[i][1] > starfield_width:
+            starfield_data[i][3] -= 2
+            starfield_data[i][1] = starfield_width * starfield_data[i][3] - player_movement_x
+
+        if starfield_data[i][2] < starfield_height * -1:
+            starfield_data[i][4] += 2
+            starfield_data[i][2] = starfield_height * starfield_data[i][4] + player_movement_y
+        elif starfield_data[i][2] > starfield_height:
+            starfield_data[i][4] -= 2
+            starfield_data[i][2] = starfield_height * starfield_data[i][4] + player_movement_y
+
+        background.blit(starfield_data[i][0], (starfield_data[i][1], starfield_data[i][2]))
+
+    #starfield1_x, starfield1_y = -player_ship.loc_x, -player_ship.loc_y
+    #background.blit(starfield1,(starfield1_x,starfield1_y))
+    background.blit(player_sprite[player_ship.frame_index], (screen_size_x // 2, screen_size_y // 2))
+
+
+    background.blit(player_sprite[player_ship.frame_index], (starfield_data[0][1], starfield_data[0][2]))
+    background.blit(player_sprite[player_ship.frame_index], (starfield_data[1][1]+100, starfield_data[1][2]+100))
+    background.blit(player_sprite[player_ship.frame_index], (starfield_data[2][1]+100, starfield_data[2][2]))
+    background.blit(player_sprite[player_ship.frame_index], (starfield_data[3][1], starfield_data[3][2]+100))
+
+    #background.blit(starfield,(starfield_x,starfield_y))
+    #background.blit(player_sprite[player_ship.frame_index], (player_ship.loc_x, player_ship.loc_y))
+
+
     window_surface.blit(background, (0, 0))
     manager.draw_ui(window_surface)
 
