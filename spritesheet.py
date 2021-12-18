@@ -100,13 +100,9 @@ class Starship(Spritesheet):
         if passed_direction != self.current_direction:
             self.forward_momentum -= (self.acceleration + self.manuverability) / math.sqrt(self.mass)
 
-        # Set the change this frame as a separate variable, so that other parts like the moving background can more easily access it.
-        self.change_x = (self.forward_momentum * math.sin(math.radians(self.frame_index)) * self.current_direction)
-        self.change_y = (self.forward_momentum * math.cos(math.radians(self.frame_index)) * self.current_direction)
-
         # Move in the direction of forward_momentum.
-        self.loc_x += self.change_x
-        self.loc_y -= self.change_y
+        self.loc_x += (self.forward_momentum * math.sin(math.radians(self.frame_index)) * self.current_direction)
+        self.loc_y -= (self.forward_momentum * math.cos(math.radians(self.frame_index)) * self.current_direction)
 
     def powered_move(self, passed_direction):
         # A new move from 0 or continuing along with forward_momentum.
@@ -118,7 +114,7 @@ class Starship(Spritesheet):
             self.make_move(passed_direction)
 
             # This keeps momentum going in the same direction.
-            self.current_direction= passed_direction
+            self.current_direction = passed_direction
 
         elif self.forward_momentum > 0:
             self.make_move(passed_direction)

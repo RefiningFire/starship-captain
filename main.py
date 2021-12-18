@@ -2,6 +2,7 @@ import pygame
 import pygame_gui
 import math
 from spritesheet import Spritesheet, Starship
+from background import Background
 
 void_drag = 100 # To give empty space a feeling of heft and resistance.
 
@@ -19,13 +20,12 @@ pygame.init()
 pygame.display.set_caption('Quick Start')
 window_surface = pygame.display.set_mode((screen_size_x, screen_size_y))
 
-
+'''
 starfield_background = pygame.image.load('sprites/Starfield.png')
 starfield_width = starfield_background.get_width()
 starfield_height = starfield_background.get_height()
 starfield_movement_x = 0
 starfield_movement_y = 0
-
 
 starfield_data = [
 [starfield_background,0,1,1,1],
@@ -33,10 +33,10 @@ starfield_data = [
 [starfield_background,0,starfield_height,1,1],
 [starfield_background,starfield_width,starfield_height,1,1]
 ]
+'''
 
 
-#starfield1, starfield1_x, starfield1_y = pygame.image.load('sprites/Starfield.png'), 0, 0
-
+background_object = Background()
 
 background = pygame.Surface((screen_size_x, screen_size_y))
 background.fill(pygame.Color('#000000'))
@@ -77,6 +77,7 @@ text_window = pygame_gui.elements.UILabel(relative_rect=pygame.Rect(
 
 player_ship = Starship('Terran','fighter','sprites/meowx/Terran/Fighter/40 X 32.png')
 
+fast_ship = (10.5,2.3,0.8,50.0)
 fighter_ship = (10.5,2.3,0.8,10.0)
 carrier_ship = (100000,0.3,0.4,2.4)
 
@@ -162,31 +163,41 @@ while is_running:
     player_movement_x = (player_ship.forward_momentum * math.sin(math.radians(player_ship.frame_index)) * player_ship.current_direction)
     player_movement_y = (player_ship.forward_momentum * math.cos(math.radians(player_ship.frame_index)) * player_ship.current_direction)
 
+    '''
     # Adjust the starfield coordinates by the player_ship movement. The player ship in this case will always be at the middle of the screen.
     for i in range(len(starfield_data)):
         starfield_data[i][1] -= player_movement_x
         starfield_data[i][2] += player_movement_y
 
-        # These loops check to see if
-        if starfield_data[i][1] < starfield_width * -1:
+        # These loops check to see if the starfields have exceeded their range, and 'leapfrogs' them if so.
+        if starfield_data[i][1] < starfield_width * -1: # Move right.
             starfield_data[i][3] += 2
-            starfield_data[i][1] = starfield_width * starfield_data[i][3] - player_movement_x
-        elif starfield_data[i][1] > starfield_width:
+            starfield_data[i][1] = (starfield_width * starfield_data[i][3]) + (starfield_data[i][1] + starfield_width)
+            print('if')
+            print(f'starfield_data[i][1] is {starfield_data[i][1]}')
+            print(f'starfield_width is {starfield_width}')
+            print(f'starfield_data[i][3] is {starfield_data[i][3]}')
+            print()
+        elif starfield_data[i][1] > starfield_width: # Move left.
             starfield_data[i][3] -= 2
-            starfield_data[i][1] = starfield_width * starfield_data[i][3] - player_movement_x
+            starfield_data[i][1] = starfield_width * starfield_data[i][3]
+            print('elif')
+            print(f'starfield_data[i][1] is {starfield_data[i][1]}')
+            print(f'starfield_width is {starfield_width}')
+            print(f'starfield_data[i][3] is {starfield_data[i][3]}')
+            print()
 
-        if starfield_data[i][2] < starfield_height * -1:
+        if starfield_data[i][2] < starfield_height * -1: # Move up.
             starfield_data[i][4] += 2
-            starfield_data[i][2] = starfield_height * starfield_data[i][4] + player_movement_y
-        elif starfield_data[i][2] > starfield_height:
+            starfield_data[i][2] = starfield_height * starfield_data[i][4]
+        elif starfield_data[i][2] > starfield_height: # Move down.
             starfield_data[i][4] -= 2
-            starfield_data[i][2] = starfield_height * starfield_data[i][4] + player_movement_y
+            starfield_data[i][2] = starfield_height * starfield_data[i][4]
 
         background.blit(starfield_data[i][0], (starfield_data[i][1], starfield_data[i][2]))
 
     #starfield1_x, starfield1_y = -player_ship.loc_x, -player_ship.loc_y
     #background.blit(starfield1,(starfield1_x,starfield1_y))
-    background.blit(player_sprite[player_ship.frame_index], (screen_size_x // 2, screen_size_y // 2))
 
 
     background.blit(player_sprite[player_ship.frame_index], (starfield_data[0][1], starfield_data[0][2]))
@@ -196,7 +207,12 @@ while is_running:
 
     #background.blit(starfield,(starfield_x,starfield_y))
     #background.blit(player_sprite[player_ship.frame_index], (player_ship.loc_x, player_ship.loc_y))
+    '''
 
+    background_object.update(player_movement_x, player_movement_y)
+    background_object.render(background)
+
+    background.blit(player_sprite[player_ship.frame_index], (screen_size_x // 2, screen_size_y // 2))
 
     window_surface.blit(background, (0, 0))
     manager.draw_ui(window_surface)
