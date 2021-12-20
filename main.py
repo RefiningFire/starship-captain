@@ -81,7 +81,7 @@ fast_ship = (10.5,2.3,0.8,50.0)
 fighter_ship = (10.5,2.3,0.8,10.0)
 carrier_ship = (100000,0.3,0.4,2.4)
 
-player_ship.set_stats(*fighter_ship
+player_ship.set_stats(*fast_ship
  # Mass, measured in tons? F-16 10.5 tons, Carrier 101,196 tons
  # manuverability, RPM? F-16 180 in 13 sec (2.3 rpm), Carrier 3-5 min (0.3 - 0.2)
  # acceleration, how quickly can reach speed.
@@ -95,7 +95,11 @@ player_ship.set_stats(*fighter_ship
 )
 
 # Create the players ship(index, loc_x, loc_y)
-player_sprite = player_ship.set_frame_sheet(90, 200, 100)
+player_sprite = player_ship.set_frame_sheet(90, 200, 100, 360)
+
+asteroid = Spritesheet('None','asteroid_01-11_','sprites/varkalandar/hjm-random_asteroids-v1/hjm-random_asteroids-01.png')
+asteroid_sprite = asteroid.set_frame_sheet(0, 300, 100, 12)
+asteroid_rotation = 0
 
 clock = pygame.time.Clock()
 is_running = True
@@ -163,56 +167,19 @@ while is_running:
     player_movement_x = (player_ship.forward_momentum * math.sin(math.radians(player_ship.frame_index)) * player_ship.current_direction)
     player_movement_y = (player_ship.forward_momentum * math.cos(math.radians(player_ship.frame_index)) * player_ship.current_direction)
 
-    '''
-    # Adjust the starfield coordinates by the player_ship movement. The player ship in this case will always be at the middle of the screen.
-    for i in range(len(starfield_data)):
-        starfield_data[i][1] -= player_movement_x
-        starfield_data[i][2] += player_movement_y
-
-        # These loops check to see if the starfields have exceeded their range, and 'leapfrogs' them if so.
-        if starfield_data[i][1] < starfield_width * -1: # Move right.
-            starfield_data[i][3] += 2
-            starfield_data[i][1] = (starfield_width * starfield_data[i][3]) + (starfield_data[i][1] + starfield_width)
-            print('if')
-            print(f'starfield_data[i][1] is {starfield_data[i][1]}')
-            print(f'starfield_width is {starfield_width}')
-            print(f'starfield_data[i][3] is {starfield_data[i][3]}')
-            print()
-        elif starfield_data[i][1] > starfield_width: # Move left.
-            starfield_data[i][3] -= 2
-            starfield_data[i][1] = starfield_width * starfield_data[i][3]
-            print('elif')
-            print(f'starfield_data[i][1] is {starfield_data[i][1]}')
-            print(f'starfield_width is {starfield_width}')
-            print(f'starfield_data[i][3] is {starfield_data[i][3]}')
-            print()
-
-        if starfield_data[i][2] < starfield_height * -1: # Move up.
-            starfield_data[i][4] += 2
-            starfield_data[i][2] = starfield_height * starfield_data[i][4]
-        elif starfield_data[i][2] > starfield_height: # Move down.
-            starfield_data[i][4] -= 2
-            starfield_data[i][2] = starfield_height * starfield_data[i][4]
-
-        background.blit(starfield_data[i][0], (starfield_data[i][1], starfield_data[i][2]))
-
-    #starfield1_x, starfield1_y = -player_ship.loc_x, -player_ship.loc_y
-    #background.blit(starfield1,(starfield1_x,starfield1_y))
-
-
-    background.blit(player_sprite[player_ship.frame_index], (starfield_data[0][1], starfield_data[0][2]))
-    background.blit(player_sprite[player_ship.frame_index], (starfield_data[1][1]+100, starfield_data[1][2]+100))
-    background.blit(player_sprite[player_ship.frame_index], (starfield_data[2][1]+100, starfield_data[2][2]))
-    background.blit(player_sprite[player_ship.frame_index], (starfield_data[3][1], starfield_data[3][2]+100))
-
-    #background.blit(starfield,(starfield_x,starfield_y))
-    #background.blit(player_sprite[player_ship.frame_index], (player_ship.loc_x, player_ship.loc_y))
-    '''
 
     background_object.update(player_movement_x, player_movement_y)
     background_object.render(background)
 
     background.blit(player_sprite[player_ship.frame_index], (screen_size_x // 2, screen_size_y // 2))
+    background.blit(asteroid_sprite[asteroid_rotation], (300, 100))
+
+    if asteroid_rotation >= 11:
+        asteroid_rotation = 0
+    elif asteroid_count >= 11:
+        asteroid_count = 0
+    else:
+        asteroid_rotation += 1
 
     window_surface.blit(background, (0, 0))
     manager.draw_ui(window_surface)

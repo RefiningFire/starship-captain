@@ -27,13 +27,14 @@ class Spritesheet:
         image = self.get_sprite(x, y, w, h)
         return image
 
-    def set_frame_sheet(self,frame_index, loc_x, loc_y):
+    def set_frame_sheet(self,frame_index, loc_x, loc_y, frame_range):
         self.frame_index = frame_index
         self.loc_x = loc_x
         self.loc_y = loc_y
+        self.frame_range = frame_range
 
         # Sheet = [self.parse_sprite(f'{self.name}1.png),       self.parse_sprite(f'{self.name}2.png'), self.parse_sprite(f'{self.name}3.png')] etc
-        self.sheet = [self.parse_sprite(f'{self.name}{i}.png') for i in range(360)]
+        self.sheet = [self.parse_sprite(f'{self.name}{i}.png') for i in range(frame_range)]
         return self.sheet
 
 class Starship(Spritesheet):
@@ -123,3 +124,18 @@ class Starship(Spritesheet):
             self.forward_momentum = 0
         else:
             print('powered_move else statement triggered')
+
+
+class Asteroid(Spritesheet):
+    def set_stats():
+        self.mass = mass
+        self.manuverability = manuverability
+        self.acceleration = acceleration
+        self.speed = speed
+
+        self.rotation_momentum = rotation_momentum
+        self.forward_momentum = forward_momentum
+        self.current_rotation = current_rotation
+        self.current_direction = current_direction
+
+        self.slow_turn_counter = slow_turn_counter
