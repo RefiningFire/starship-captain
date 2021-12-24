@@ -20,23 +20,7 @@ pygame.init()
 pygame.display.set_caption('Quick Start')
 window_surface = pygame.display.set_mode((screen_size_x, screen_size_y))
 
-'''
-starfield_background = pygame.image.load('sprites/Starfield.png')
-starfield_width = starfield_background.get_width()
-starfield_height = starfield_background.get_height()
-starfield_movement_x = 0
-starfield_movement_y = 0
-
-starfield_data = [
-[starfield_background,0,1,1,1],
-[starfield_background,starfield_width,0,1,1],
-[starfield_background,0,starfield_height,1,1],
-[starfield_background,starfield_width,starfield_height,1,1]
-]
-'''
-
-
-background_object = Background()
+#background_object = Background()
 
 background = pygame.Surface((screen_size_x, screen_size_y))
 background.fill(pygame.Color('#000000'))
@@ -168,18 +152,11 @@ while is_running:
     player_movement_y = (player_ship.forward_momentum * math.cos(math.radians(player_ship.frame_index)) * player_ship.current_direction)
 
 
-    background_object.update(player_movement_x, player_movement_y)
-    background_object.render(background)
+    #background_object.update(player_movement_x, player_movement_y)
+    #background_object.render(background)
 
     background.blit(player_sprite[player_ship.frame_index], (screen_size_x // 2, screen_size_y // 2))
     background.blit(asteroid_sprite[asteroid_rotation], (300, 100))
-
-    if asteroid_rotation >= 11:
-        asteroid_rotation = 0
-    elif asteroid_count >= 11:
-        asteroid_count = 0
-    else:
-        asteroid_rotation += 1
 
     window_surface.blit(background, (0, 0))
     manager.draw_ui(window_surface)
